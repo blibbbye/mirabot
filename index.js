@@ -68,7 +68,14 @@ async function handleDihMessage(message) {
   if (content !== "!dih") return;
 
   const settings = await loadDihSettings();
-  if (!settings.enabled) return;
+  if (!settings.enabled) {
+    console.log("!dih was requested, but the feature is disabled in dih_settings.json.");
+    await message.reply({
+      content: "🔒 !dih is currently disabled. Only the controller can turn it back on with enable!dih.",
+      allowedMentions: { repliedUser: false }
+    });
+    return;
+  }
 
   let size;
   let unit = "inches";
@@ -104,19 +111,39 @@ async function handleDihMessage(message) {
 
 client.once(Events.ClientReady, readyClient => {
   console.log("✅ MiraBot is online as " + readyClient.user.tag);
-  console.log("!dih enabled by default. Use disable!dih / enable!dih as the controller.");
+  console.log("🤖 Bot user ID: " + readyClient.user.id);
+  console.log("ℹ️ !dih listens for regular server messages; Message Content Intent must be enabled in the Developer Portal.");
+  console.log("!dih enabled by default unless dih_settings.json says otherwise. Controller: " + DIH_CONTROL_USER_ID);
 });
 
+let emptyMessageContentWarnings = 0;
+
 client.on(Events.MessageCreate, async message => {
+  if (message.author?.bot || !message.guild) return;
+
+  const content = typeof message.content === "string" ? message.content.trim() : "";
+  const lowerContent = content.toLowerCase();
+
+  if (content) {
+    if (lowerContent === "!dih" || lowerContent === "enable!dih" || lowerContent === "disable!dih") {
+      console.log("📨 DIH command received from user " + message.author.id + ": " + lowerContent);
+    }
+  } else if (emptyMessageContentWarnings < 3) {
+    emptyMessageContentWarnings++;
+    console.warn("⚠️ A server message arrived with empty content. If !dih is not triggering, check Message Content Intent on the same app as the token in .env.");
+  }
+
   try {
     await handleDihMessage(message);
   } catch (error) {
     console.error("Message handler error:", error);
-    if (message.guild && message.content.trim().toLowerCase() === "!dih") {
+    if (lowerContent === "!dih") {
       await message.reply("I couldn't run !dih. Check the bot console for details.")
-        .catch(() => null);
+        .catch(replyError => console.error("Couldn't send error reply:", replyError.message));
     }
   }
 });
 
-client.login(TOKEN);
+client.login(TOKEN).catch(error => {
+  console.error("❌ MiraBot could not log in. Check that DISCORD_TOKEN belongs to the intended bot application.", error);
+});
