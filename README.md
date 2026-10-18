@@ -36,3 +36,10 @@ npm start
 - Keep the bot token private. Never post it in chat, screenshots, or GitHub.
 - If the bot says it is online but ignores `!dih`, make sure **Message Content Intent** is enabled in both the Developer Portal and the code (the code already requests it).
 - This is a standalone starter bot because the repository was empty when it was set up; it does not include any other MiraBot features.
+
+
+## Troubleshooting `!dih`
+- Start MiraBot and check the terminal. It prints which bot account logged in.
+- The code prints a diagnostic if a server message reaches the bot with empty content. This usually means **Message Content Intent** is not enabled for the same Discord application as the token in `.env`.
+- If `!dih` has been disabled, the bot now replies with a message saying that it is disabled instead of silently ignoring the command. User `863446773326151700` can run `enable!dih`.
+- The bot needs View Channel, Send Messages, and Embed Links in the channel where you test it.
