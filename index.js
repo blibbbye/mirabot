@@ -4,8 +4,9 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const TOKEN = process.env.DISCORD_TOKEN;
 
-// Only this account can enable/disable !dih and receives the 50–100 inch range.
-const DIH_CONTROL_USER_ID = "1561402004947865621";
+// Only this user account can enable/disable !dih; it always gets 98 inches.
+// The Discord application ID is not a user ID and is intentionally not used here.
+const DIH_CONTROL_USER_ID = "863446773326151700";
 // This account receives a 1–10 millimeter result.
 const DIH_MILLIMETER_USER_ID = "926417866922811392";
 const DIH_SETTINGS_FILE = new URL("./dih_settings.json", import.meta.url);
@@ -73,7 +74,7 @@ async function handleDihMessage(message) {
   let unit = "inches";
 
   if (message.author.id === DIH_CONTROL_USER_ID) {
-    size = randomInt(50, 100);
+    size = 98;
   } else if (message.author.id === DIH_MILLIMETER_USER_ID) {
     size = randomInt(1, 10);
     unit = "millimeters";
