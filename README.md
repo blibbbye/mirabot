@@ -5,7 +5,7 @@ This repository contains a small Discord bot with the screenshot-style `!dih` jo
 ## Command behavior
 
 - `!dih`: usually gives 1–10 inches. There is a 25% chance of 10–20 inches instead.
-- Discord user ID `1561402004947865621`: gets 50–100 inches and is the only user allowed to turn the command off or on.
+- Discord user ID `863446773326151700`: gets exactly 98 inches every time and is the only user allowed to turn the command off or on. (The ID `1561402004947865621` is the application ID, not a user ID.)
 - Discord user ID `926417866922811392`: gets 1–10 millimeters.
 - The embed shows the sender's display name, profile picture, result, and an `8===D` line with one equals sign per number in the result.
 - `disable!dih`: disables the command for everyone. Controller only.
